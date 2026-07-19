@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { ConnectWallet } from './ConnectWallet'
+import { useSoundPref } from '../hooks/useSoundPref'
 
 const links = [
   { to: '/', label: 'CASE FILE', end: true },
@@ -8,6 +9,8 @@ const links = [
 ]
 
 export function Nav() {
+  const { muted, toggle } = useSoundPref()
+
   return (
     <header className="border-b-4 border-void">
       <div className="hazard-stripe h-2 w-full" />
@@ -35,7 +38,19 @@ export function Nav() {
           ))}
         </nav>
 
-        <ConnectWallet />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={muted ? 'Unmute sound effects' : 'Mute sound effects'}
+            aria-pressed={!muted}
+            title={muted ? 'SFX muted' : 'SFX on'}
+            className="rounded-full border-2 border-steel px-2.5 py-1.5 font-mono text-xs text-steel transition-colors hover:border-paper hover:text-paper"
+          >
+            {muted ? 'SFX OFF' : 'SFX ON'}
+          </button>
+          <ConnectWallet />
+        </div>
       </div>
     </header>
   )

@@ -3,11 +3,12 @@ import { useFocusSession } from '../hooks/useFocusSession'
 import { SessionSetup } from '../components/SessionSetup'
 import { ActiveSession } from '../components/ActiveSession'
 import { VerdictStamp } from '../components/VerdictStamp'
+import { VerdictReceipt } from '../components/VerdictReceipt'
 import { StreakBadge } from '../components/StreakBadge'
 
 export function FocusApp() {
   const { isConnected } = useAccount()
-  const { phase, session, errorMessage, startSession, resolveSession, reset } =
+  const { phase, session, errorMessage, txHash, startSession, resolveSession, reset } =
     useFocusSession()
 
   const showVerdict = phase === 'completed' || phase === 'broken'
@@ -79,6 +80,18 @@ export function FocusApp() {
           </div>
         )}
       </div>
+
+      {isConnected && showVerdict && session && (
+        <div className="fade-rise mt-6">
+          <VerdictReceipt
+            verdict={phase === 'completed' ? 'cleared' : 'broken'}
+            sessionId={session.sessionId}
+            amountWei={session.amountWei}
+            durationSeconds={session.durationSeconds}
+            txHash={txHash}
+          />
+        </div>
+      )}
 
       {isConnected && <StreakBadge />}
     </div>

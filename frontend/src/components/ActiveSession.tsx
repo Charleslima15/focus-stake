@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { formatEther } from 'viem'
 import type { ActiveSessionInfo } from '../hooks/useFocusSession'
+import { playTick } from '../lib/sound'
 
 interface Props {
   session: ActiveSessionInfo
@@ -20,13 +21,19 @@ export function ActiveSession({ session, onNaturalCompletion }: Props) {
     return Math.max(0, session.durationSeconds - elapsed)
   })
   const firedRef = useRef(false)
+  const lastTickRef = useRef<number | null>(null)
 
   useEffect(() => {
     firedRef.current = false
+    lastTickRef.current = null
     const interval = setInterval(() => {
       const elapsed = Math.floor((Date.now() - session.startedAt) / 1000)
       const left = Math.max(0, session.durationSeconds - elapsed)
       setRemaining(left)
+      if (left > 0 && left <= 10 && lastTickRef.current !== left) {
+        lastTickRef.current = left
+        playTick()
+      }
       if (left <= 0 && !firedRef.current) {
         firedRef.current = true
         clearInterval(interval)

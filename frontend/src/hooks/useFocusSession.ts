@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAccount, usePublicClient, useWriteContract } from 'wagmi'
 import { decodeEventLog } from 'viem'
 import { FOCUS_STAKE_ADDRESS, FOCUS_STAKE_ABI } from '../config/contract'
+import { primeAudio, playBrokenThud, playClearedChime } from '../lib/sound'
 
 export type SessionPhase =
   | 'idle'
@@ -44,6 +45,10 @@ export function useFocusSession() {
       try {
         setErrorMessage(null)
         setPhase('staking')
+        // Warm up the AudioContext on this click (a real user gesture) so
+        // the verdict sound isn't blocked by autoplay policy later, even
+        // when the session ends via a blur event instead of a click.
+        primeAudio()
         const hash = await writeContractAsync({
           address: FOCUS_STAKE_ADDRESS,
           abi: FOCUS_STAKE_ABI,
@@ -112,6 +117,8 @@ export function useFocusSession() {
         setTxHash(hash)
         await publicClient!.waitForTransactionReceipt({ hash })
         setPhase(completed ? 'completed' : 'broken')
+        if (completed) playClearedChime()
+        else playBrokenThud()
       } catch (err) {
         console.error(err)
         setErrorMessage(err instanceof Error ? err.message : 'Failed to resolve session.')
