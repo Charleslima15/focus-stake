@@ -31,7 +31,7 @@ function Exhibit({
   body: string
 }) {
   return (
-    <div className="border-2 border-steel p-5">
+    <div className="rounded-xl border-2 border-steel p-5">
       <p className="mb-3 font-mono text-xs tracking-[0.2em] text-citation">EXHIBIT {n}</p>
       <h3 className="mb-2 font-display text-2xl text-paper">{title}</h3>
       <p className="font-mono text-sm leading-relaxed text-steel">{body}</p>
@@ -59,7 +59,7 @@ export function Home() {
       {/* HERO */}
       <section className="grain relative overflow-hidden border-b-2 border-steel px-4 pb-16 pt-14 sm:px-6 sm:pt-20">
         <div className="mx-auto max-w-4xl">
-          <p className="fade-rise fade-rise-1 mb-5 inline-flex items-center gap-2 border-2 border-steel px-3 py-1 font-mono text-[11px] tracking-[0.25em] text-steel">
+          <p className="fade-rise fade-rise-1 mb-5 inline-flex items-center gap-2 rounded-full border-2 border-steel px-3 py-1 font-mono text-[11px] tracking-[0.25em] text-steel">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-citation opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-citation" />
@@ -188,14 +188,14 @@ export function Home() {
         </Reveal>
 
         {!hasRecords ? (
-          <Reveal className="border-2 border-steel px-6 py-12 text-center">
+          <Reveal className="rounded-xl border-2 border-steel px-6 py-12 text-center">
             <p className="font-mono text-sm text-steel">
               No subjects on file yet. The first case opens the record.
             </p>
           </Reveal>
         ) : (
           <div className="grid gap-4 sm:grid-cols-3">
-            <Reveal delayMs={0} className="border-2 border-steel p-5">
+            <Reveal delayMs={0} className="rounded-xl border-2 border-steel p-5">
               <p className="mb-3 font-mono text-xs tracking-[0.2em] text-citation">
                 TOP STAKER
               </p>
@@ -206,7 +206,7 @@ export function Home() {
                 {topStaker ? `${formatEther(topStaker.totalStaked)} MON staked` : 'no data yet'}
               </p>
             </Reveal>
-            <Reveal delayMs={100} className="border-2 border-steel p-5">
+            <Reveal delayMs={100} className="rounded-xl border-2 border-steel p-5">
               <p className="mb-3 font-mono text-xs tracking-[0.2em] text-cleared">
                 LONGEST STREAK
               </p>
@@ -217,7 +217,7 @@ export function Home() {
                 {longestStreak ? `${longestStreak.streak} sessions clean` : 'no data yet'}
               </p>
             </Reveal>
-            <Reveal delayMs={200} className="border-2 border-steel p-5">
+            <Reveal delayMs={200} className="rounded-xl border-2 border-steel p-5">
               <p className="mb-3 font-mono text-xs tracking-[0.2em] text-verdict">
                 MOST SHAMED
               </p>

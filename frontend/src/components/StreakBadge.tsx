@@ -13,7 +13,7 @@ export function StreakBadge() {
   if (!isFeatureEnabled) return null
 
   return (
-    <div className="mt-4 flex items-center justify-between border-2 border-steel px-4 py-3">
+    <div className="mt-4 flex items-center justify-between rounded-xl border-2 border-steel px-4 py-3">
       <div className="font-mono text-xs tracking-[0.2em] text-steel">
         {hasBadge ? (
           <span className="text-cleared">BADGE CLAIMED</span>

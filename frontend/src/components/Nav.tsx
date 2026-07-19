@@ -1,5 +1,5 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { NavLink } from 'react-router-dom'
+import { ConnectWallet } from './ConnectWallet'
 
 const links = [
   { to: '/', label: 'CASE FILE', end: true },
@@ -35,7 +35,7 @@ export function Nav() {
           ))}
         </nav>
 
-        <ConnectButton />
+        <ConnectWallet />
       </div>
     </header>
   )

@@ -21,7 +21,7 @@ function Column({
   accent: string
 }) {
   return (
-    <div className="border-2 border-steel">
+    <div className="overflow-hidden rounded-xl border-2 border-steel">
       <div className={`border-b-2 border-steel px-4 py-2 font-mono text-xs tracking-[0.2em] ${accent}`}>
         {title}
       </div>

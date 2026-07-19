@@ -147,6 +147,41 @@ export function useFocusSession() {
     }
   }, [phase, resolveSession])
 
+  // Hold a screen wake lock for the duration of an active session so a
+  // phone's own screen-timeout can't masquerade as the user switching away.
+  // Without this, visibilitychange fires "hidden" identically whether the
+  // user opened another app or the OS just dimmed the screen from
+  // inactivity — there's no way to tell those apart after the fact, so the
+  // fix is to stop the timeout from firing in the first place. Silently
+  // no-ops where the API isn't supported (e.g. Firefox).
+  useEffect(() => {
+    if (phase !== 'active' || !('wakeLock' in navigator)) return
+
+    let sentinel: WakeLockSentinel | null = null
+    let cancelled = false
+
+    const acquire = async () => {
+      try {
+        const lock = await navigator.wakeLock.request('screen')
+        if (cancelled) {
+          void lock.release()
+          return
+        }
+        sentinel = lock
+      } catch {
+        // Wake lock can be refused (low battery mode, no user activation,
+        // etc.) — the session still runs, it just loses this protection.
+      }
+    }
+
+    void acquire()
+
+    return () => {
+      cancelled = true
+      if (sentinel) void sentinel.release()
+    }
+  }, [phase])
+
   const reset = useCallback(() => {
     setPhase('idle')
     setSession(null)

@@ -16,7 +16,7 @@ export function FocusApp() {
     <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6">
       <div
         key={phase === 'staking' || phase === 'idle' ? 'setup' : phase}
-        className={`fade-rise relative border-2 border-steel bg-void px-4 py-2 sm:px-6 ${
+        className={`fade-rise relative overflow-hidden rounded-xl border-2 border-steel bg-void px-4 py-2 sm:px-6 ${
           showVerdict ? 'case-panel-shake' : ''
         }`}
       >
