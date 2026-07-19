@@ -1,9 +1,226 @@
 @import "tailwindcss";
 
-html, body, #root {
+@theme {
+  --color-void: #0b0b0c;
+  --color-citation: #f2c41c;
+  --color-verdict: #c81e3a;
+  --color-cleared: #2f7a4d;
+  --color-paper: #edeae2;
+  --color-steel: #4b4e52;
+
+  --font-display: "Anton", sans-serif;
+  --font-mono: "Space Mono", monospace;
+}
+
+html,
+body,
+#root {
   height: 100%;
 }
 
 body {
   margin: 0;
+  background-color: var(--color-void);
+  color: var(--color-paper);
+}
+
+/* Diagonal hazard stripe, used sparingly on the top bar only */
+.hazard-stripe {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-citation),
+    var(--color-citation) 10px,
+    var(--color-void) 10px,
+    var(--color-void) 20px
+  );
+}
+
+/* Ticket-tear perforation divider */
+.perforation {
+  border: none;
+  height: 0;
+  border-top: 2px dashed var(--color-steel);
+  position: relative;
+}
+.perforation::before,
+.perforation::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--color-void);
+}
+.perforation::before {
+  left: -10px;
+}
+.perforation::after {
+  right: -10px;
+}
+
+/* Progress bar with a perforated, ticket-like look instead of a smooth gradient */
+.ticket-progress-track {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-steel) 0,
+    var(--color-steel) 6px,
+    transparent 6px,
+    transparent 10px
+  );
+}
+
+/* Verdict stamp: slams down with a hard ease-out stop, slight overshoot + rotation */
+@keyframes stamp-impact {
+  0% {
+    transform: scale(2.6) rotate(-14deg);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(0.94) rotate(-6deg);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(1.05) rotate(-8deg);
+  }
+  100% {
+    transform: scale(1) rotate(-7deg);
+    opacity: 1;
+  }
+}
+
+@keyframes stamp-shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-3px, 2px);
+  }
+  40% {
+    transform: translate(3px, -2px);
+  }
+  60% {
+    transform: translate(-2px, -2px);
+  }
+  80% {
+    transform: translate(2px, 2px);
+  }
+}
+
+.stamp-enter {
+  animation: stamp-impact 0.45s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+.case-panel-shake {
+  animation: stamp-shake 0.35s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp-enter,
+  .case-panel-shake {
+    animation: none !important;
+  }
+}
+
+/* Film-grain texture, laid over dark sections for atmosphere. Subtle by design. */
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Rotated "stamped" badge, reused outside the verdict overlay (hero, exhibits) */
+.rotated-stamp {
+  transform: rotate(-6deg);
+}
+
+/* Staggered entrance for hero content — one orchestrated reveal, not scattered micro-motion */
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-rise {
+  animation: fade-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.fade-rise-1 { animation-delay: 0.05s; }
+.fade-rise-2 { animation-delay: 0.15s; }
+.fade-rise-3 { animation-delay: 0.25s; }
+.fade-rise-4 { animation-delay: 0.35s; }
+
+/* Ticking digit — used for live stat counters, a faint pulse to signal "live" without being distracting */
+@keyframes tick-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.tick-pulse {
+  animation: tick-pulse 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-rise,
+  .fade-rise-1,
+  .fade-rise-2,
+  .fade-rise-3,
+  .fade-rise-4,
+  .tick-pulse {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Scroll-triggered reveal, driven by IntersectionObserver toggling .is-visible */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Countdown urgency — kicks in during the final seconds of an active session */
+@keyframes urgent-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.015);
+  }
+}
+
+.urgent-pulse {
+  animation: urgent-pulse 0.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .urgent-pulse {
+    animation: none !important;
+  }
 }

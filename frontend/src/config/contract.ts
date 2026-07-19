@@ -1,6 +1,11 @@
 export const FOCUS_STAKE_ADDRESS =
   '0x7645d790b9D04e1650eE502173091C1B913438E6' as const
 
+// Block the contract was deployed at — the earliest block that could ever
+// contain a SessionStarted/SessionResolved log, so log scans never need to
+// walk further back than this.
+export const FOCUS_STAKE_DEPLOY_BLOCK = 46220159n
+
 // Pulled verbatim from the verified source on MonadScan Testnet:
 // https://testnet.monadscan.com/address/0x7645d790b9D04e1650eE502173091C1B913438E6#code
 export const FOCUS_STAKE_ABI = [
